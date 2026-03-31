@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MESSENGR v0.0.1</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <h1>MESSENGR v0.0.1</h1>
+        <div id="my-id">Ваш ID: <span id="my-id-span"></span></div>
+        <input type="text" id="peer-id" placeholder="Введите ID собеседника">
+        <button id="connect-btn">Подключиться</button>
+        <div id="chat">
+            <div id="messages"></div>
+            <input type="text" id="message-input" placeholder="Введите сообщение">
+            <button id="emoji-btn">😀</button>
+            <button id="send-btn">Отправить</button>
+        </div>
+    </div>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
