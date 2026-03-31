@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MESSENGR</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body.dark-theme {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+        
+        body.light-theme {
+            background-color: #ffffff;
+            color: #333333;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid;
+        }
+        
+        body.dark-theme header {
+            border-bottom-color: #333;
+        }
+        
+        body.light-theme header {
+            border-bottom-color: #ddd;
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        #theme-toggle {
+            background: none;
+            border: 2px solid;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        body.dark-theme #theme-toggle {
+            border-color: #ffd700;
+            color: #ffd700;
+        }
+        
+        body.light-theme #theme-toggle {
+            border-color: #333;
+            color: #333;
+        }
+        
+        #theme-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        #chat-container {
+            border: 1px solid;
+            height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+        
+        body.dark-theme #chat-container {
+            border-color: #444;
+            background-color: #2a2a2a;
+        }
+        
+        body.light-theme #chat-container {
+            border-color: #ccc;
+            background-color: #f9f9f9;
+        }
+        
+        #message-input {
+            width: 70%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid;
+            transition: border-color 0.3s;
+        }
+        
+        body.dark-theme #message-input {
+            background-color: #333;
+            color: #e0e0e0;
+            border-color: #555;
+        }
+        
+        body.light-theme #message-input {
+            background-color: #fff;
+            color: #333;
+            border-color: #ccc;
+        }
+        
+        #send-button {
+            width: 25%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        #send-button:hover {
+            background-color: #0056b3;
+        }
+        
+        #send-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .message {
+            margin: 10px 0;
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        
+        .sent {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        
+        .received {
+            background-color: #e9ecef;
+            color: #333;
+            align-self: flex-start;
+            margin-right: auto;
+        }
+        
+        body.dark-theme .received {
+            background-color: #444;
+            color: #e0e0e0;
+        }
+        
+        .message-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #connection-info {
+            border: 1px solid;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        
+        body.dark-theme #connection-info {
+            background-color: #2a2a2a;
+            border-color: #444;
+        }
+        
+        body.light-theme #connection-info {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+        }
+        
+        #friend-id-input {
+            width: 60%;
+            padding: 10px;
+            margin-right: 10px;
+            border-radius: 5px;
+            border: 1px solid;
+            transition: all 0.3s;
+        }
+        
+        body.dark-theme #friend-id-input {
+            background-color: #333;
+            color: #e0e0e0;
+            border-color: #555;
+        }
+        
+        body.light-theme #friend-id-input {
+            background-color: #fff;
+            color: #333;
+            border-color: #ccc;
+        }
+        
+        #connect-button {
+            width: 35%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        #connect-button:hover {
+            background-color: #218838;
+        }
+        
+        #connect-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        #your-id {
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        body.dark-theme #your-id {
+            color: #4dabf7;
+        }
+        
+        .status {
+            margin: 10px 0;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .status.waiting {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        body.dark-theme .status.waiting {
+            background-color: #3d3d00;
+            border-color: #666600;
+            color: #ffd700;
+        }
+        
+        .status.connected {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        body.dark-theme .status.connected {
+            background-color: #1e4620;
+            border-color: #2d6a31;
+            color: #90ee90;
+        }
+        
+        .status.connecting {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        body.dark-theme .status.connecting {
+            background-color: #0c3d44;
+            border-color: #17a2b8;
+            color: #87ceeb;
+        }
+        
+        #emoji-panel {
+            display: none;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 10px;
+            border: 1px solid;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        body.dark-theme #emoji-panel {
+            background-color: #2a2a2a;
+            border-color: #444;
+        }
+        
+        body.light-theme #emoji-panel {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+        }
+        
+        #emoji-panel.show {
+            display: flex;
+        }
+        
+        .emoji-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        
+        .emoji-btn:hover {
+            background-color: rgba(0, 123, 255, 0.2);
+        }
+        
+        #emoji-toggle {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        
+        #emoji-toggle:hover {
+            background-color: rgba(0, 123, 255, 0.2);
+        }
+        
+        #end-dialog-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        
+        #end-dialog-button:hover {
+            background-color: #c82333;
+        }
+        
+        #pending-connections {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px solid;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        body.dark-theme #pending-connections {
+            background-color: #2a2a2a;
+            border-color: #444;
+        }
+        
+        body.light-theme #pending-connections {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+        }
+        
+        #pending-connections.show {
+            display: block;
+        }
+        
+        .pending-request {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+        
+        .pending-request-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .accept-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .accept-btn:hover {
+            background-color: #218838;
+        }
+        
+        .reject-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .reject-btn:hover {
+            background-color: #c82333;
+        }
+        
+        #input-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        #message-input {
+            flex: 1;
+        }
+        
+        #chat-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        #pending-count {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        
+        #pending-toggle {
+            background: none;
+            border: 1px solid;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        body.dark-theme #pending-toggle {
+            border-color: #555;
+            color: #e0e0e0;
+        }
+        
+        body.light-theme #pending-toggle {
+            border-color: #ccc;
+            color: #333;
+        }
+        
+        #pending-toggle:hover {
+            background-color: rgba(0, 123, 255, 0.2);
+        }
+        
+        .system-message {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            margin: 10px 0;
+            padding: 5px;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        body.dark-theme .system-message {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #adb5bd;
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <header>
+        <h1>MESSENGR</h1>
+        <button id="theme-toggle" title="Переключить тему">🌙</button>
+    </header>
+    
+    <div id="connection-info">
+        <div>Ваш ID: <span id="your-id">Загрузка...</span></div>
+        <div style="margin-top: 10px;">
+            <input type="text" id="friend-id-input" placeholder="Введите ID друга">
+            <button id="connect-button">Соединиться с другом</button>
+        </div>
+        <div id="connection-status" class="status waiting">Ожидание соединения...</div>
+        <button id="pending-toggle">Ожидающие подключения <span id="pending-count">0</span></button>
+        <div id="pending-connections"></div>
+    </div>
+    
+    <div id="chat-container" class="message-container"></div>
+    
+    <div id="emoji-panel"></div>
+    
+    <div id="input-area">
+        <button id="emoji-toggle">😀</button>
+        <input type="text" id="message-input" placeholder="Введите сообщение...">
+        <button id="send-button">Отправить</button>
+    </div>
+    
+    <div id="chat-actions">
+        <button id="end-dialog-button">Завершить диалог</button>
+    </div>
+
+    <script>
+        // Конфигурация
+        const SIGNALING_URL = '/.netlify/functions/signal';
+        let USER_ID = null;
+        let peerConnection;
+        let dataChannel;
+        let isInitiator = false;
+        let friendId = null;
+        let pendingConnections = new Map(); // Map<senderId, {offer, timestamp}>
+        let isDarkTheme = false;
+        
+        // Эмодзи для панели
+        const emojis = [
+            '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃',
+            '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙',
+            '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤫', '🤔',
+            '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥',
+            '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮',
+            '🤧', '🥵', '🥶', '🥴', '😵', '🤯', '🤠', '🥳', '😎', '🤓',
+            '🧐', '😕', '😟', '🙁', '☹️', '😮', '😯', '😲', '😳', '🥺',
+            '😦', '😧', '😨', '😰', '😥', '😢', '😭', '😱', '😖', '😣',
+            '😞', '😓', '😩', '😫', '🥱', '😤', '😡', '😠', '🤬', '😈',
+            '👿', '💀', '☠️', '💩', '🤡', '👹', '👺', '👻', '👽', '👾',
+            '🤖', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾',
+            '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔',
+            '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '💟', '☮️',
+            '✝️', '☪️', '🕉️', '☸️', '✡️', '🔯', '🕎', '☯️', '☦️', '🛐',
+            '⛎', '♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐',
+            '♑', '♒', '♓', '🆔', '⚛️', '🉑', '☢️', '☣️', '📴', '📳',
+            '🈶', '🈚', '🈸', '🈺', '🈷️', '✴️', '🆚', '💮', '🉐', '㊙️',
+            '㊗️', '🈴', '🈵', '🈹', '🈲', '🅰️', '🅱️', '🆎', '🆑', '🅾️',
+            '🆘', '❌', '⭕', '🛑', '⛔', '📛', '🚫', '💯', '💢', '♨️',
+            '🚷', '🚯', '🚳', '🚱', '🔞', '📵', '🚭', '❗', '❕', '❓',
+            '❔', '‼️', '⁉️', '🔅', '🔆', '〽️', '⚠️', '🚸', '🔱', '⚜️',
+            '🔰', '♻️', '✅', '🈯', '💹', '❇️', '✳️', '❎', '🌐', '💠',
+            'Ⓜ️', '🌀', '💤', '🏧', '🚾', '♿', '🅿️', '🛗', '🈳', '🈂️',
+            '🛂', '🛃', '🛄', '🛅', '🚹', '🚺', '🚼', '⚧', '🚻', '🚮',
+            '🎦', '📶', '🈁', '🔣', 'ℹ️', '🔤', '🔡', '🔠', '🆖', '🆗',
+            '🆙', '🆒', '🆕', '🆓', '0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣',
+            '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟', '🔢', '#️⃣', '*️⃣', '⏏️', '▶️',
+            '⏸️', '⏯️', '⏹️', '⏺️', '⏭️', '⏮️', '⏩', '⏪', '⏫', '⏬',
+            '◀️', '🔼', '🔽', '➡️', '⬅️', '⬆️', '⬇️', '↗️', '↘️', '↙️',
+            '↖️', '↕️', '↔️', '↪️', '↩️', '⤴️', '⤵️', '🔀', '🔁', '🔂',
+            '🔄', '🔃', '🎵', '🎶', '➕', '➖', '➗', '✖️', '🟰', '♾️',
+            '💲', '💱', '™️', '©️', '®️', '👁️‍🗨️', '🔚', '🔙', '🔛', '🔝',
+            '🔜', '〰️', '➰', '➿', '✔️', '☑️', '🔘', '🔴', '🟠', '🟡',
+            '🟢', '🔵', '🟣', '⚫', '⚪', '🟤', '🔺', '🔻', '🔸', '🔹',
+            '🔶', '🔷', '🔳', '🔲', '▪️', '▫️', '◾', '◽', '◼️', '◻️',
+            '🟥', '🟧', '🟨', '🟩', '🟦', '🟪', '⬛', '⬜', '🟫', '🔈',
+            '🔇', '🔉', '🔊', '🔔', '🔕', '📣', '📢', '👁️‍🗨️', '💬', '💭',
+            '🗯️', '♠️', '♣️', '♥️', '♦️', '🃏', '🎴', '🀄', '🕐', '🕑',
+            '🕒', '🕓', '🕔', '🕕', '🕖', '🕗', '🕘', '🕙', '🕚', '🕛',
+            '🕜', '🕝', '🕞', '🕟', '🕠', '🕡', '🕢', '🕣', '🕤', '🕥',
+            '🕦', '🕧'
+        ];
+
+        // DOM элементы
+        const chatContainer = document.getElementById('chat-container');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const yourIdSpan = document.getElementById('your-id');
+        const friendIdInput = document.getElementById('friend-id-input');
+        const connectButton = document.getElementById('connect-button');
+        const connectionStatus = document.getElementById('connection-status');
+        const themeToggle = document.getElementById('theme-toggle');
+        const emojiPanel = document.getElementById('emoji-panel');
+        const emojiToggle = document.getElementById('emoji-toggle');
+        const endDialogButton = document.getElementById('end-dialog-button');
+        const pendingConnectionsDiv = document.getElementById('pending-connections');
+        const pendingToggle = document.getElementById('pending-toggle');
+        const pendingCount = document.getElementById('pending-count');
+
+        // Инициализация
+        init();
+
+        async function init() {
+            // Загрузка темы из localStorage
+            isDarkTheme = localStorage.getItem('p2p-messenger-dark-theme') === 'true';
+            applyTheme();
+            
+            // Генерация ID
+            USER_ID = localStorage.getItem('p2p-messenger-user-id');
+            if (!USER_ID) {
+                USER_ID = Math.random().toString(36).substring(2, 10);
+                localStorage.setItem('p2p-messenger-user-id', USER_ID);
+            }
+            yourIdSpan.textContent = USER_ID;
+
+            // Инициализация панели эмодзи
+            initEmojiPanel();
+
+            try {
+                await createPeerConnection();
+                console.log('PeerConnection создан');
+            } catch (e) {
+                console.error('Ошибка создания PeerConnection:', e);
+                setConnectionStatus('Ошибка инициализации', 'waiting');
+            }
+
+            startPolling();
+        }
+
+        function applyTheme() {
+            if (isDarkTheme) {
+                document.body.classList.remove('light-theme');
+                document.body.classList.add('dark-theme');
+                themeToggle.textContent = '☀️';
+            } else {
+                document.body.classList.remove('dark-theme');
+                document.body.classList.add('light-theme');
+                themeToggle.textContent = '🌙';
+            }
+        }
+
+        function initEmojiPanel() {
+            emojis.forEach(emoji => {
+                const btn = document.createElement('button');
+                btn.className = 'emoji-btn';
+                btn.textContent = emoji;
+                btn.addEventListener('click', () => {
+                    messageInput.value += emoji;
+                    messageInput.focus();
+                });
+                emojiPanel.appendChild(btn);
+            });
+        }
+
+        function createPeerConnection() {
+            peerConnection = new RTCPeerConnection({
+                iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+            });
+
+            peerConnection.onicecandidate = handleIceCandidate;
+            peerConnection.ondatachannel = handleDataChannel;
+            peerConnection.onconnectionstatechange = handleConnectionStateChange;
+
+            return Promise.resolve();
+        }
+
+        function handleIceCandidate(event) {
+            if (event.candidate) {
+                sendSignal({
+                    type: 'ice-candidate',
+                    candidate: event.candidate
+                });
+            }
+        }
+
+        function handleDataChannel(event) {
+            dataChannel = event.channel;
+            setupDataChannel();
+        }
+
+        function handleConnectionStateChange() {
+            console.log('Состояние соединения:', peerConnection.connectionState);
+            if (peerConnection.connectionState === 'connected') {
+                setConnectionStatus('Соединено!', 'connected');
+                addSystemMessage('Соединение установлено');
+            } else if (peerConnection.connectionState === 'connecting') {
+                setConnectionStatus('Соединение...', 'connecting');
+            } else if (peerConnection.connectionState === 'closed' || 
+                      peerConnection.connectionState === 'failed' ||
+                      peerConnection.connectionState === 'disconnected') {
+                setConnectionStatus('Соединение потеряно', 'waiting');
+                addSystemMessage('Соединение потеряно');
+            }
+        }
+
+        function setConnectionStatus(text, className) {
+            connectionStatus.textContent = text;
+            connectionStatus.className = `status ${className}`;
+        }
+
+        async function makeOffer() {
+            if (!peerConnection) {
+                await createPeerConnection();
+            }
+            
+            dataChannel = peerConnection.createDataChannel('chat');
+            setupDataChannel();
+
+            setConnectionStatus('Создание предложения соединения...', 'connecting');
+            
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+
+            await sendSignal({
+                type: 'offer',
+                offer: offer,
+                recipient: friendId
+            });
+            
+            console.log('Инициатор: создан offer для', friendId);
+        }
+
+        function setupDataChannel() {
+            dataChannel.onopen = () => {
+                console.log('Data channel открыт');
+                sendButton.disabled = false;
+                messageInput.disabled = false;
+                setConnectionStatus('Готово к обмену сообщениями!', 'connected');
+                addSystemMessage('Канал связи открыт');
+            };
+            dataChannel.onclose = () => {
+                console.log('Data channel закрыт');
+                sendButton.disabled = true;
+                messageInput.disabled = true;
+                setConnectionStatus('Соединение потеряно', 'waiting');
+                addSystemMessage('Канал связи закрыт');
+            };
+            dataChannel.onmessage = (event) => {
+                addMessage(event.data, 'received');
+            };
+        }
+
+        async function sendSignal(signal) {
+            signal.sender = USER_ID;
+            try {
+                await fetch(SIGNALING_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(signal)
+                });
+            } catch (e) {
+                console.error('Ошибка отправки сигнала:', e);
+            }
+        }
+
+        async function startPolling() {
+            while (true) {
+                try {
+                    const response = await fetch(`${SIGNALING_URL}/${USER_ID}`);
+                    if (response.ok) {
+                        const signals = await response.json();
+                        for (const signal of signals) {
+                            await handleSignal(signal);
+                        }
+                    }
+                } catch (e) {
+                    // Игнорируем ошибки polling
+                }
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+        }
+
+        async function handleSignal(signal) {
+            if (signal.sender === USER_ID) return;
+
+            switch (signal.type) {
+                case 'offer':
+                    // Добавляем в ожидающие подключения
+                    pendingConnections.set(signal.sender, {
+                        offer: signal.offer,
+                        timestamp: Date.now()
+                    });
+                    updatePendingConnections();
+                    break;
+                case 'answer':
+                    if (isInitiator && signal.sender === friendId) {
+                        await handleAnswer(signal.answer);
+                    }
+                    break;
+                case 'ice-candidate':
+                    if (signal.candidate && peerConnection) {
+                        try {
+                            await peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
+                        } catch (e) {
+                            console.error('Ошибка добавления ICE кандидата:', e);
+                        }
+                    }
+                    break;
+            }
+        }
+
+        function updatePendingConnections() {
+            const count = pendingConnections.size;
+            pendingCount.textContent = count;
+            
+            if (count > 0) {
+                pendingConnectionsDiv.classList.add('show');
+                pendingConnectionsDiv.innerHTML = '';
+                
+                pendingConnections.forEach((data, senderId) => {
+                    const requestDiv = document.createElement('div');
+                    requestDiv.className = 'pending-request';
+                    requestDiv.innerHTML = `
+                        <span>Запрос от: ${senderId}</span>
+                        <div class="pending-request-buttons">
+                            <button class="accept-btn" data-sender="${senderId}">Принять</button>
+                            <button class="reject-btn" data-sender="${senderId}">Отклонить</button>
+                        </div>
+                    `;
+                    pendingConnectionsDiv.appendChild(requestDiv);
+                });
+                
+                // Добавляем обработчики кнопок
+                document.querySelectorAll('.accept-btn').forEach(btn => {
+                    btn.addEventListener('click', () => acceptConnection(btn.dataset.sender));
+                });
+                document.querySelectorAll('.reject-btn').forEach(btn => {
+                    btn.addEventListener('click', () => rejectConnection(btn.dataset.sender));
+                });
+            } else {
+                pendingConnectionsDiv.classList.remove('show');
+            }
+        }
+
+        async function acceptConnection(senderId) {
+            const connectionData = pendingConnections.get(senderId);
+            if (!connectionData) return;
+            
+            friendId = senderId;
+            isInitiator = false;
+            
+            // Удаляем из ожидающих
+            pendingConnections.delete(senderId);
+            updatePendingConnections();
+            
+            // Обновляем UI
+            friendIdInput.value = senderId;
+            friendIdInput.disabled = true;
+            connectButton.disabled = true;
+            
+            setConnectionStatus('Принятие соединения...', 'connecting');
+            
+            try {
+                await handleOffer(connectionData.offer, senderId);
+            } catch (e) {
+                console.error('Ошибка при принятии соединения:', e);
+                setConnectionStatus('Ошибка соединения', 'waiting');
+                friendIdInput.disabled = false;
+                connectButton.disabled = false;
+            }
+        }
+
+        function rejectConnection(senderId) {
+            pendingConnections.delete(senderId);
+            updatePendingConnections();
+            addSystemMessage(`Запрос от ${senderId} отклонен`);
+        }
+
+        async function handleOffer(offer, sender) {
+            if (!peerConnection) {
+                await createPeerConnection();
+            }
+            
+            friendId = sender;
+            setConnectionStatus('Получено предложение соединения...', 'connecting');
+            
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+
+            await sendSignal({
+                type: 'answer',
+                answer: answer,
+                recipient: friendId
+            });
+            
+            console.log('Получен offer, отправлен answer');
+        }
+
+        async function handleAnswer(answer) {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+            setConnectionStatus('Соединено!', 'connected');
+            console.log('Получен answer, соединение установлено');
+        }
+
+        function addMessage(text, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = text;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function addSystemMessage(text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'system-message';
+            messageDiv.textContent = text;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function endDialog() {
+            // Закрываем соединение
+            if (dataChannel) {
+                dataChannel.close();
+            }
+            if (peerConnection) {
+                peerConnection.close();
+            }
+            
+            // Сбрасываем состояние
+            peerConnection = null;
+            dataChannel = null;
+            isInitiator = false;
+            friendId = null;
+            
+            // Очищаем UI
+            chatContainer.innerHTML = '';
+            friendIdInput.value = '';
+            friendIdInput.disabled = false;
+            connectButton.disabled = false;
+            sendButton.disabled = true;
+            messageInput.disabled = true;
+            
+            setConnectionStatus('Ожидание соединения...', 'waiting');
+            addSystemMessage('Диалог завершен');
+            
+            // Пересоздаем peer connection
+            createPeerConnection().catch(e => {
+                console.error('Ошибка пересоздания PeerConnection:', e);
+            });
+        }
+
+        // Обработчики событий
+        themeToggle.addEventListener('click', () => {
+            isDarkTheme = !isDarkTheme;
+            localStorage.setItem('p2p-messenger-dark-theme', isDarkTheme);
+            applyTheme();
+        });
+
+        emojiToggle.addEventListener('click', () => {
+            emojiPanel.classList.toggle('show');
+        });
+
+        sendButton.addEventListener('click', () => {
+            const text = messageInput.value.trim();
+            if (text && dataChannel && dataChannel.readyState === 'open') {
+                dataChannel.send(text);
+                addMessage(text, 'sent');
+                messageInput.value = '';
+            }
+        });
+
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendButton.click();
+            }
+        });
+
+        connectButton.addEventListener('click', () => {
+            const enteredFriendId = friendIdInput.value.trim();
+            if (!enteredFriendId) {
+                alert('Пожалуйста, введите ID друга');
+                return;
+            }
+            
+            friendId = enteredFriendId;
+            isInitiator = true;
+            connectButton.disabled = true;
+            friendIdInput.disabled = true;
+            
+            setConnectionStatus('Инициация соединения...', 'connecting');
+            
+            makeOffer().catch(e => {
+                console.error('Ошибка при создании offer:', e);
+                setConnectionStatus('Ошибка соединения', 'waiting');
+                connectButton.disabled = false;
+                friendIdInput.disabled = false;
+            });
+        });
+
+        endDialogButton.addEventListener('click', () => {
+            if (confirm('Вы уверены, что хотите завершить диалог?')) {
+                endDialog();
+            }
+        });
+
+        pendingToggle.addEventListener('click', () => {
+            pendingConnectionsDiv.classList.toggle('show');
+        });
+    </script>
+</body>
+</html>

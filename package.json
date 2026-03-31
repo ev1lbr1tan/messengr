@@ -1,0 +1,13 @@
+{
+  "name": "p2p-messenger",
+  "version": "1.0.0",
+  "description": "Простой P2P мессенджер с текстом и голосом",
+  "main": "index.html",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "netlify build"
+  },
+  "keywords": ["p2p", "webrtc", "messenger", "netlify"],
+  "author": "",
+  "license": "MIT"
+}
